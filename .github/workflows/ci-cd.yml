@@ -43,17 +43,10 @@ jobs:
     - name: Trivy FS scan
       run: trivy fs --format json -o trivy-fs-report.json .
 
-    - name: gitleaks Installation
-      run: |
-          # Install latest gitleaks from GitHub releases (safer than apt on some runners)
-          GL_VERSION=$(curl -s https://api.github.com/repos/zricethezav/gitleaks/releases/latest | jq -r .tag_name)
-          curl -L "https://github.com/zricethezav/gitleaks/releases/download/${GL_VERSION}/gitleaks_${GL_VERSION#v}_linux_x64.tar.gz" -s -o gitleaks.tar.gz
-          tar -xzf gitleaks.tar.gz
-          sudo mv gitleaks /usr/local/bin/gitleaks
-          gitleaks version
-
-    - name: Gitleaks code scan
-      run: gitleaks detect --source . --report-path=gitleaks-report.json --report-format=json
+    - name: Gitleaks Installation
+      run: sudo apt install gitleaks -y
+    - name: Gitleaks Code Scan
+      run: gitleaks detect source . -r gitleaks-report.json -f json
       
     
       
